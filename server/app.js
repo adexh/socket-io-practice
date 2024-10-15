@@ -11,7 +11,6 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173"
-    
   }
 });
 
@@ -21,7 +20,12 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("A user connected");
-  console.log("Id", socket.id);
+  
+  socket.on('message', (msg) => {
+    console.log("message : ", msg);
+    
+    socket.broadcast.emit('message', msg); // Broadcast to everyone including the sender
+  });
   
   socket.on("disconnect", () => {
     console.log("A user disconnected");
